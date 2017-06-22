@@ -64,3 +64,12 @@ Exemple:
 Address = "wss://gra1.logs.ovh.com/tail/?tk=demo"
 Pattern = "{{date .timestamp}} {{ ._msg }}"
 ```
+
+# Contributing
+
+You've developed a new cool feature? Fixed an annoying bug? We'd be happy
+to hear from you! Make sure to read [CONTRIBUTING.md](./CONTRIBUTING.md) before.
+
+# License
+
+This work is under the BSD license, see the [LICENSE](LICENSE) file for details.

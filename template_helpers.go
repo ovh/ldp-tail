@@ -1,0 +1,131 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+)
+
+var bColors = map[string][]byte{
+	"green":   {27, 91, 52, 50, 109},
+	"white":   {27, 91, 52, 55, 109},
+	"yellow":  {27, 91, 52, 51, 109},
+	"red":     {27, 91, 52, 49, 109},
+	"blue":    {27, 91, 52, 52, 109},
+	"magenta": {27, 91, 52, 53, 109},
+	"cyan":    {27, 91, 52, 54, 109},
+	"reset":   {27, 91, 48, 109},
+}
+
+func bColor(c string) string {
+	if s, ok := bColors[c]; ok {
+		return string(s)
+	}
+	return ""
+}
+
+var colors = map[string][]byte{
+	"green":   {27, 91, 51, 50, 109},
+	"white":   {27, 91, 51, 55, 109},
+	"yellow":  {27, 91, 51, 51, 109},
+	"red":     {27, 91, 51, 49, 109},
+	"blue":    {27, 91, 51, 52, 109},
+	"magenta": {27, 91, 51, 53, 109},
+	"cyan":    {27, 91, 51, 54, 109},
+	"reset":   {27, 91, 48, 109},
+}
+
+func color(c string) string {
+	if s, ok := colors[c]; ok {
+		return string(s)
+	}
+	return ""
+}
+
+func date(v float64) string {
+	t := time.Unix(int64(v), 0)
+	return t.Format("2006-01-02 15:04:05")
+}
+
+func join(s ...string) string {
+	return strings.Join(s[1:], s[0])
+}
+
+func concat(s ...string) string {
+	var b bytes.Buffer
+	for _, v := range s {
+		b.WriteString(v)
+	}
+	return b.String()
+}
+
+func duration(v interface{}, factor float64) (string, error) {
+	var d time.Duration
+	switch value := v.(type) {
+	case string:
+		f, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return "", err
+		}
+		d = time.Duration(f * factor)
+	case float64:
+		d = time.Duration(value * factor)
+	case int64:
+		d = time.Duration(value * int64(factor))
+	default:
+		return "", fmt.Errorf("Invalid type %T for duration", v)
+	}
+	return d.String(), nil
+}
+
+func get(v map[string]interface{}, k string) interface{} {
+	return v[k]
+}
+
+var columnLength []int
+
+func column(sep string, s ...string) (string, error) {
+	if columnLength == nil {
+		columnLength = make([]int, len(s))
+	}
+
+	if len(s) != len(columnLength) {
+		return "", fmt.Errorf("Invalid number of arguments to 'column'")
+	}
+
+	for k, v := range s {
+		if len(v) > columnLength[k] {
+			columnLength[k] = len(v)
+		} else {
+			s[k] = v + strings.Repeat(" ", columnLength[k]-len(v))
+		}
+	}
+
+	return strings.Join(s, sep), nil
+}
+
+func begin(v interface{}, substr string) bool {
+	var value string
+
+	switch v.(type) {
+	case string:
+		value = v.(string)
+	default:
+		value = fmt.Sprintf("%v", v)
+	}
+	return strings.HasPrefix(value, substr)
+}
+
+func contain(v interface{}, substr string) bool {
+	var value string
+
+	switch v.(type) {
+	case string:
+		value = v.(string)
+	default:
+		value = fmt.Sprintf("%v", v)
+	}
+	return strings.Contains(value, substr)
+}

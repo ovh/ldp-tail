@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/ovh/ldp-tail)](https://goreportcard.com/report/github.com/ovh/ldp-tail)
+
 Logs Data Platform - Tail
 =========================
 

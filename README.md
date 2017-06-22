@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ovh/ldp-tail.svg?branch=master)](https://travis-ci.org/ovh/ldp-tail)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ovh/ldp-tail)](https://goreportcard.com/report/github.com/ovh/ldp-tail)
 
 Logs Data Platform - Tail

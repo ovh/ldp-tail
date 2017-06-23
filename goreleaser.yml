@@ -1,0 +1,15 @@
+build:
+  binary: ldp-tail
+  goos:
+    - windows
+    - darwin
+    - linux
+  goarch:
+    - amd64
+  ldflags: -s -w
+archive:
+  files:
+    - LICENSE
+  format_overrides:
+    - goos: windows
+      format: zip

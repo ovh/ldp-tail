@@ -18,6 +18,11 @@ Usage
 ```sh
 ldp-tail --address <URI>
 ```
+Demo
+----
+```sh
+ldp-tail --address wss://gra1.logs.ovh.com/tail/?tk=demo --pattern "{{ .short_message }}"
+```
 
 Parameters
 ----------
@@ -65,7 +70,7 @@ Raw     bool
 Exemple:
 ```
 Address = "wss://gra1.logs.ovh.com/tail/?tk=demo"
-Pattern = "{{date .timestamp}} {{ ._msg }}"
+Pattern = "{{date .timestamp}}: {{if ne ._title \"\"}}[ {{._title}} ] {{end}}{{ .short_message }}"
 ```
 
 # Contributing

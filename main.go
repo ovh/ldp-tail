@@ -69,53 +69,57 @@ func main() {
 		}
 	}
 
-	// Try to connect
-	log.Printf("Connecting to %s...\n", u.Host)
-
-	ws, err := websocket.Dial(u.String(), "", "http://mySelf")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("Connected!")
-
-	var msg []byte
 	for {
-		ws.SetReadDeadline(time.Now().Add(5 * time.Second))
-		err := websocket.Message.Receive(ws, &msg)
+		// Try to connect
+		log.Printf("Connecting to %s...\n", u.Host)
 
-		if t, ok := err.(net.Error); ok && t.Timeout() {
-			// Timeout, send a Pong && continue
-			pingCodec.Send(ws, nil)
-			continue
-		}
-
+		ws, err := websocket.Dial(u.String(), "", "http://mySelf")
 		if err != nil {
-			log.Fatalf("Error while reading from %q: %q. Exiting...\n", u.Host, err.Error())
+			log.Fatal(err)
 		}
 
-		// Extract Message
-		var logMessage struct {
-			Message string `json:"message"`
-		}
-		json.Unmarshal(msg, &logMessage)
+		log.Println("Connected!")
 
-		// Extract infos
-		var message map[string]interface{}
-		json.Unmarshal([]byte(logMessage.Message), &message)
+		var msg []byte
+		for {
+			ws.SetReadDeadline(time.Now().Add(5 * time.Second))
+			err := websocket.Message.Receive(ws, &msg)
 
-		if !match(message, c.Match) {
-			continue
-		}
+			if t, ok := err.(net.Error); ok && t.Timeout() {
+				// Timeout, send a Pong && continue
+				pingCodec.Send(ws, nil)
+				continue
+			}
 
-		if c.Raw {
-			fmt.Printf("%+v\n", message)
-		} else {
-			// Print them
-			err = t.Execute(os.Stdout, message)
-			os.Stdout.Write([]byte{'\n'})
 			if err != nil {
-				log.Printf("Error while executing template: %s", err.Error())
+				log.Printf("Error while reading from %q: %q. Will try to reconnect after 1s...\n", u.Host, err.Error())
+				time.Sleep(1 * time.Second)
+				break
+			}
+
+			// Extract Message
+			var logMessage struct {
+				Message string `json:"message"`
+			}
+			json.Unmarshal(msg, &logMessage)
+
+			// Extract infos
+			var message map[string]interface{}
+			json.Unmarshal([]byte(logMessage.Message), &message)
+
+			if !match(message, c.Match) {
+				continue
+			}
+
+			if c.Raw {
+				fmt.Printf("%+v\n", message)
+			} else {
+				// Print them
+				err = t.Execute(os.Stdout, message)
+				os.Stdout.Write([]byte{'\n'})
+				if err != nil {
+					log.Printf("Error while executing template: %s", err.Error())
+				}
 			}
 		}
 	}

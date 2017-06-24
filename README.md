@@ -29,7 +29,7 @@ Parameters
 * Server
   * `address` URI of the websocket
 * Filtering
-  * `match` Display only messages matching the condition. Example: `_method:verifyPassword`. You may specify an operator like: `_method.begin:verify` or negate its meaning like: `_method.not.begin:verify`. Available operators are:
+  * `match` Display only messages matching the condition. Example: `_method=verifyPassword`. You may specify an operator like: `_method.begin=verify` or negate its meaning like: `_method.not.begin=verify`. Available operators are:
     * `present` The field is present
     * `begin` The field begins with the value
     * `contain` The field contains the value

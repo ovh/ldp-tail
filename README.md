@@ -44,7 +44,7 @@ Parameters
     * `color` Set text color. Available colors are: `green` `white` `yellow` `red` `blue` `magenta` `cyan`
     * `bColor` Set background color. Available colors are: `green` `white` `yellow` `red` `blue` `magenta` `cyan`
     * `noColor` Disable text and background color
-    * `date` Transform a timestamp in human readable date
+    * `date` Transform a timestamp in a human readable date. Default format is `2006-01-02 15:04:05` but can be customized with the second optional argument
     * `join` Concatenates strings passed in argument with the first argument used as separator
     * `concat` Concatenates strings passed in argument
     * `duration` Transform a value in a human readable duration. First argument must be a parsable number. The second argument is the multiplier coefficient to be applied based on nanoseconds. Ex: 1000000 if the value is in milliseconds.

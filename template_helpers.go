@@ -44,9 +44,15 @@ func color(c string) string {
 	return ""
 }
 
-func date(v float64) string {
+func date(v float64, f ...string) string {
+
 	t := time.Unix(int64(v), 0)
-	return t.Format("2006-01-02 15:04:05")
+
+	if len(f) == 0 {
+		return t.Format("2006-01-02 15:04:05")
+	}
+
+	return t.Format(f[0])
 }
 
 func join(s ...string) string {

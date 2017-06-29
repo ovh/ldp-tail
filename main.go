@@ -57,15 +57,12 @@ func main() {
 	if len(c.Match) > 0 {
 		log.Printf("Filters are:")
 		for _, f := range c.Match {
-			if f.Operator == "present" && !f.Not {
-				log.Printf("  %q is present", f.Key)
-			} else if f.Operator == "present" && f.Not {
-				log.Printf("  %q is missing", f.Key)
-			} else if f.Not {
-				log.Printf("  %q not %s %v", f.Key, f.Operator, f.Value)
+			if f.Not {
+				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].description_not, f.Key, f.Value)
 			} else {
-				log.Printf("  %q %s %v", f.Key, f.Operator, f.Value)
+				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].description, f.Key, f.Value)
 			}
+
 		}
 	}
 

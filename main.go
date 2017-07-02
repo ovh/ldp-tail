@@ -58,7 +58,7 @@ func main() {
 		log.Printf("Filters are:")
 		for _, f := range c.Match {
 			if f.Not {
-				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].description_not, f.Key, f.Value)
+				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].descriptionNot, f.Key, f.Value)
 			} else {
 				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].description, f.Key, f.Value)
 			}

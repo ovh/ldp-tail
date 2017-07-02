@@ -8,8 +8,8 @@ import (
 )
 
 var supportedMatchOperatorsMap = map[string]struct {
-	description     string
-	description_not string
+	description    string
+	descriptionNot string
 }{
 	"present": {"Field %[1]q is present", "Field %[1]q is not present"},
 	"begin":   {"Field %[1]q begins with %[2]v", "Field %[1]q doest not begins with %[2]v"},

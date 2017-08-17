@@ -135,3 +135,28 @@ func contain(v interface{}, substr string) bool {
 	}
 	return strings.Contains(value, substr)
 }
+
+var syslogLevels = map[int]string{
+	0: "emerg",
+	1: "alert",
+	2: "crit",
+	3: "err",
+	4: "warn",
+	5: "notice",
+	6: "info",
+	7: "debug",
+}
+
+func level(v interface{}) (string, error) {
+	vFloat, err := toNumber(v)
+	if err != nil {
+		return "", err
+	}
+
+	value, ok := syslogLevels[int(vFloat)]
+	if !ok {
+		value = fmt.Sprintf("(invalid:%d)", int(vFloat))
+	}
+
+	return value, nil
+}

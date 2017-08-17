@@ -41,6 +41,7 @@ func main() {
 		"column":   column,
 		"begin":    begin,
 		"contain":  contain,
+		"level":    level,
 	}).Parse(c.Pattern)
 	if err != nil {
 		log.Fatalf("Failed to parse pattern: %s", err.Error())

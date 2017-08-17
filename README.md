@@ -54,6 +54,7 @@ Parameters
     * `column` Formats input into multiple columns. Columns are delimited with the characters supplied in the first argument. Ex: `"{{ column " | " (date .timestamp) (concat ._method " " ._path ) ._httpStatus_int }}`
     * `begin` Return true if the first argument begins with the second
     * `contain` Return true if the second argument is within the first
+    * `level` Transform a Gelf/Syslog level value (0-7) to a syslog severity keyword
 * Config
   * `config` Config file loaded before parsing parameters, so parameters will override the values in the config file (except for `match` where parameters will add more criteria instead of replacing them). The config file use the [TOML](https://github.com/toml-lang/toml) file format. The structure of the configuration file is:
 ```

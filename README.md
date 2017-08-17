@@ -55,10 +55,15 @@ Parameters
     * `begin` Return true if the first argument begins with the second
     * `contain` Return true if the second argument is within the first
     * `level` Transform a Gelf/Syslog level value (0-7) to a syslog severity keyword
+* Forwarding
+  * `forwardURL` The Logs Data Platform GELF Input URL to forward logs to. ldp-tail can forward matching logs to another Logs Data Platform instance by using the URL of the SSL GELF Input. 
+  * `forwardToken` The token of the stream you forward logs to. Using a generic input ask you to specify the token of the stream you want to send logs to.  
 * Config
   * `config` Config file loaded before parsing parameters, so parameters will override the values in the config file (except for `match` where parameters will add more criteria instead of replacing them). The config file use the [TOML](https://github.com/toml-lang/toml) file format. The structure of the configuration file is:
 ```
 Address string
+ForwardURL string
+ForwardToken string
 Match   []{
     Key      string
     Operator string
@@ -71,6 +76,8 @@ Raw     bool
 Exemple:
 ```
 Address = "wss://gra1.logs.ovh.com/tail/?tk=demo"
+ForwardURL = "gra2.logs.ovh.com:12202"
+ForwardToken = "7489e9b1-8f86-43a2-c9af-0b878687a364"
 Pattern = "{{date .timestamp}}: {{if ne ._title \"\"}}[ {{._title}} ] {{end}}{{ .short_message }}"
 ```
 

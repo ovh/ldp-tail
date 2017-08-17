@@ -66,6 +66,14 @@ func main() {
 
 		}
 	}
+	var messageChannel chan map[string]interface{}
+	forwardEnabled := false
+
+	if c.ForwardURL != "" && c.ForwardToken != "" {
+		messageChannel = make(chan map[string]interface{}, 100)
+		go forwardToLDP(messageChannel, c.ForwardURL, c.ForwardToken)
+		forwardEnabled = true
+	}
 
 	for {
 		// Try to connect
@@ -118,6 +126,10 @@ func main() {
 				if err != nil {
 					log.Printf("Error while executing template: %s", err.Error())
 				}
+			}
+
+			if forwardEnabled {
+				messageChannel <- message
 			}
 		}
 	}

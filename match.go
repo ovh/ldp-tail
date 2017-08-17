@@ -145,6 +145,8 @@ func toNumber(v interface{}) (float64, error) {
 			return 0, fmt.Errorf("'%v' can't be parsed as a number", v)
 		}
 		return f, nil
+	case uint:
+		return float64(value), nil
 	case uint8:
 		return float64(value), nil
 	case uint16:
@@ -152,6 +154,8 @@ func toNumber(v interface{}) (float64, error) {
 	case uint32:
 		return float64(value), nil
 	case uint64:
+		return float64(value), nil
+	case int:
 		return float64(value), nil
 	case int8:
 		return float64(value), nil

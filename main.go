@@ -37,6 +37,7 @@ func main() {
 		"duration": duration,
 		"int":      func(v string) (int64, error) { f, e := strconv.ParseFloat(v, 64); return int64(f), e },
 		"float":    func(v string) (float64, error) { f, e := strconv.ParseFloat(v, 64); return f, e },
+		"string":   func(v interface{}) string { return fmt.Sprintf("%v", v) },
 		"get":      get,
 		"column":   column,
 		"begin":    begin,

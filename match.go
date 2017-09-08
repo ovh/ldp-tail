@@ -12,8 +12,8 @@ var supportedMatchOperatorsMap = map[string]struct {
 	descriptionNot string
 }{
 	"present": {"Field %[1]q is present", "Field %[1]q is not present"},
-	"begin":   {"Field %[1]q begins with %[2]v", "Field %[1]q doest not begins with %[2]v"},
-	"contain": {"Field %[1]q contains %[2]v", "Field %[1]q doest not contains %[2]v"},
+	"begin":   {"Field %[1]q begins with %[2]v", "Field %[1]q does not begins with %[2]v"},
+	"contain": {"Field %[1]q contains %[2]v", "Field %[1]q does not contains %[2]v"},
 	"lt":      {"Field %[1]q is less than %[2]v", "Field %[1]q is greater than or equal to %[2]v"},
 	"le":      {"Field %[1]q is less than or equal to %[2]v", "Field %[1]q is greater than %[2]v"},
 	"eq":      {"Field %[1]q is equal to %[2]v", "Field %[1]q is not equal to %[2]v"},

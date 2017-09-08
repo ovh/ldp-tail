@@ -38,6 +38,7 @@ Parameters
     * `eq` The field is equal to the value
     * `ge` The field is greater than or equal to the value
     * `gt` The field is greater than the value
+    * `regex` The field match the regular expression
 * Formatting
   * `raw` Display raw message instead of parsing it
   * `pattern` Template to apply on each message to display it. Default: `{{._appID}}> {{.short_message}}`. Custom available functions are:

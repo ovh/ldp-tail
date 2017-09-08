@@ -68,11 +68,15 @@ func main() {
 	}
 	var messageChannel chan map[string]interface{}
 	forwardEnabled := false
+	silent := false
 
 	if c.ForwardURL != "" && c.ForwardToken != "" {
 		messageChannel = make(chan map[string]interface{}, 100)
 		go forwardToLDP(messageChannel, c.ForwardURL, c.ForwardToken)
 		forwardEnabled = true
+		if c.Silent {
+			silent = true
+		}
 	}
 
 	for {
@@ -85,6 +89,10 @@ func main() {
 		}
 
 		log.Println("Connected!")
+
+		if silent {
+			log.Println("Forwarding in silent mode")
+		}
 
 		var msg []byte
 		for {
@@ -117,14 +125,16 @@ func main() {
 				continue
 			}
 
-			if c.Raw {
-				fmt.Printf("%+v\n", message)
-			} else {
-				// Print them
-				err = t.Execute(os.Stdout, message)
-				os.Stdout.Write([]byte{'\n'})
-				if err != nil {
-					log.Printf("Error while executing template: %s", err.Error())
+			if !silent {
+				if c.Raw {
+					fmt.Printf("%+v\n", message)
+				} else {
+					// Print them
+					err = t.Execute(os.Stdout, message)
+					os.Stdout.Write([]byte{'\n'})
+					if err != nil {
+						log.Printf("Error while executing template: %s", err.Error())
+					}
 				}
 			}
 

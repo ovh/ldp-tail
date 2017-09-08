@@ -17,6 +17,7 @@ type conf struct {
 	Match        []matchCriterion
 	Pattern      string
 	Raw          bool
+	Silent       bool
 }
 
 var defaultConf = conf{
@@ -25,6 +26,7 @@ var defaultConf = conf{
 	"",
 	nil,
 	"{{._appID}}> {{.short_message}}",
+	false,
 	false,
 }
 
@@ -40,6 +42,7 @@ func getConf() conf {
 	match := flag.StringArray("match", nil, "Fields to match")
 	pattern := flag.String("pattern", defaultConf.Pattern, "Template to apply on each message to display it")
 	raw := flag.Bool("raw", defaultConf.Raw, "Display raw message instead of parsing it")
+	silent := flag.Bool("silent", defaultConf.Silent, "Do not display messages when forwarding")
 
 	flag.Parse()
 
@@ -78,6 +81,10 @@ func getConf() conf {
 	}
 	if *raw != defaultConf.Raw {
 		c.Raw = *raw
+	}
+
+	if *silent != defaultConf.Silent {
+		c.Silent = *silent
 	}
 
 	// Match Criteria

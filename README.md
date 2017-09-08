@@ -58,6 +58,7 @@ Parameters
 * Forwarding
   * `forwardURL` The Logs Data Platform GELF Input URL to forward logs to. ldp-tail can forward matching logs to another Logs Data Platform instance by using the URL of the SSL GELF Input. 
   * `forwardToken` The token of the stream you forward logs to. Using a generic input ask you to specify the token of the stream you want to send logs to.  
+  * `silent` Disable the print of messages when forwarding. When forwarding is enabled, you can use this option to not display the messages ldp-tail forwards. 
 * Config
   * `config` Config file loaded before parsing parameters, so parameters will override the values in the config file (except for `match` where parameters will add more criteria instead of replacing them). The config file use the [TOML](https://github.com/toml-lang/toml) file format. The structure of the configuration file is:
 ```

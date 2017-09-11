@@ -116,7 +116,7 @@ func getConf() conf {
 	}
 
 	if c.Address == "" {
-		fmt.Fprintf(os.Stderr, "No `address` specified. Please specify it with --adress or thru a config file\n")
+		fmt.Fprintf(os.Stderr, "No `address` specified. Please specify it with --address or thru a config file\n")
 		flag.Usage()
 		os.Exit(-1)
 	}

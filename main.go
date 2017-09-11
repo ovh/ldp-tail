@@ -19,13 +19,7 @@ func init() {
 }
 
 func main() {
-
 	c := getConf()
-
-	// Check args
-	if c.Address == "" {
-		log.Fatal("`address` is required")
-	}
 
 	t, err := template.New("template").Funcs(template.FuncMap{
 		"color":    color,

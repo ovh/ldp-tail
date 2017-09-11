@@ -6,7 +6,7 @@ build:
     - linux
   goarch:
     - amd64
-  ldflags: -s -w
+  ldflags: -s -w -X main.buildVersion={{.Version}} -X main.buildCommit={{.Commit}} -X main.buildDate={{.Date}}
 archive:
   files:
     - LICENSE

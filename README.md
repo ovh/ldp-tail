@@ -4,9 +4,12 @@
 Logs Data Platform - Tail
 =========================
 
+This tool allows you to display the logs pushed in Logs Data Platform in real time.
+More infos on Logs Data Platform and how to obtain the stream uri: https://docs.ovh.com/gb/en/mobile-hosting/logs-data-platform/ldp-tail/
+
+
 Installation
 ------------
-
 To install cli, simply run:
 ```
 $ go get github.com/ovh/ldp-tail
@@ -14,16 +17,15 @@ $ go get github.com/ovh/ldp-tail
 
 Usage
 -----
-
 ```sh
 ldp-tail --address <URI>
 ```
+
 Demo
 ----
 ```sh
 ldp-tail --address wss://gra1.logs.ovh.com/tail/?tk=demo --pattern "{{ .short_message }}"
 ```
-More infos: https://docs.ovh.com/gb/en/mobile-hosting/logs-data-platform/ldp-tail/
 
 Parameters
 ----------

@@ -23,6 +23,7 @@ Demo
 ```sh
 ldp-tail --address wss://gra1.logs.ovh.com/tail/?tk=demo --pattern "{{ .short_message }}"
 ```
+More infos: https://docs.ovh.com/gb/en/mobile-hosting/logs-data-platform/ldp-tail/
 
 Parameters
 ----------

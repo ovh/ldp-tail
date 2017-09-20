@@ -12,16 +12,22 @@ import (
 )
 
 type conf struct {
-	Address string
-	Match   []matchCriterion
-	Pattern string
-	Raw     bool
+	Address      string
+	ForwardURL   string
+	ForwardToken string
+	Match        []matchCriterion
+	Pattern      string
+	Raw          bool
+	Silent       bool
 }
 
 var defaultConf = conf{
 	"",
+	"",
+	"",
 	nil,
 	"{{._appID}}> {{.short_message}}",
+	false,
 	false,
 }
 
@@ -43,9 +49,12 @@ func getConf() conf {
 	configFile := flag.String("config", "", "Configuration file")
 
 	address := flag.String("address", defaultConf.Address, "URI of the websocket")
+	forwardURL := flag.String("forwardURL", "", "Logs Data Platform URL to forward logs to")
+	forwardToken := flag.String("forwardToken", "", "Logs Data Platform Token of the stream you forward logs to")
 	match := flag.StringArray("match", nil, "Fields to match")
 	pattern := flag.String("pattern", defaultConf.Pattern, "Template to apply on each message to display it")
 	raw := flag.Bool("raw", defaultConf.Raw, "Display raw message instead of parsing it")
+	silent := flag.Bool("silent", defaultConf.Silent, "Do not display messages when forwarding")
 
 	flag.Parse()
 
@@ -63,11 +72,31 @@ func getConf() conf {
 	if *address != defaultConf.Address {
 		c.Address = *address
 	}
+	if *forwardURL != "" {
+		if *forwardToken == "" {
+			log.Fatal("a forward URL must be associated with a forward Token")
+		} else {
+			c.ForwardURL = *forwardURL
+		}
+	}
+
+	if *forwardToken != "" {
+		if *forwardURL == "" {
+			log.Fatal("a forward Token must be associated with a forward URL")
+		} else {
+			c.ForwardToken = *forwardToken
+		}
+	}
+
 	if *pattern != defaultConf.Pattern {
 		c.Pattern = *pattern
 	}
 	if *raw != defaultConf.Raw {
 		c.Raw = *raw
+	}
+
+	if *silent != defaultConf.Silent {
+		c.Silent = *silent
 	}
 
 	// Match Criteria

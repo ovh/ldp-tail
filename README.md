@@ -4,9 +4,12 @@
 Logs Data Platform - Tail
 =========================
 
+This tool allows you to display the logs pushed in Logs Data Platform in real time.
+More infos on Logs Data Platform and how to obtain the stream uri: https://docs.ovh.com/gb/en/mobile-hosting/logs-data-platform/ldp-tail/
+
+
 Installation
 ------------
-
 To install cli, simply run:
 ```
 $ go get github.com/ovh/ldp-tail
@@ -14,10 +17,10 @@ $ go get github.com/ovh/ldp-tail
 
 Usage
 -----
-
 ```sh
 ldp-tail --address <URI>
 ```
+
 Demo
 ----
 ```sh
@@ -38,6 +41,7 @@ Parameters
     * `eq` The field is equal to the value
     * `ge` The field is greater than or equal to the value
     * `gt` The field is greater than the value
+    * `regex` The field match the regular expression
 * Formatting
   * `raw` Display raw message instead of parsing it
   * `pattern` Template to apply on each message to display it. Default: `{{._appID}}> {{.short_message}}`. Custom available functions are:
@@ -50,6 +54,7 @@ Parameters
     * `duration` Transform a value in a human readable duration. First argument must be a parsable number. The second argument is the multiplier coefficient to be applied based on nanoseconds. Ex: 1000000 if the value is in milliseconds.
     * `int` Converts a string in int64
     * `float` Converts a string in float64
+    * `string` Converts a value to a string
     * `get` Return the value under the key passed in the second argument of the map passed first argument. Useful for accessing keys containing a period. Ex: `{{ get . "foo.bar" }}`
     * `column` Formats input into multiple columns. Columns are delimited with the characters supplied in the first argument. Ex: `"{{ column " | " (date .timestamp) (concat ._method " " ._path ) ._httpStatus_int }}`
     * `begin` Return true if the first argument begins with the second

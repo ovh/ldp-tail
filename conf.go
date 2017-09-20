@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 
@@ -32,8 +33,19 @@ var defaultConf = conf{
 
 var operatorRegexp = regexp.MustCompile(`(.+?)\.(not\.)?(` + strings.Join(supportedMatchOperators, "|") + `)`)
 
-func getConf() conf {
+// Build details
+var buildVersion = "dev"
+var buildCommit = "unknown"
+var buildDate = "unknown"
 
+func init() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of %s (Version %s):\n", os.Args[0], buildVersion)
+		flag.PrintDefaults()
+	}
+}
+
+func getConf() conf {
 	configFile := flag.String("config", "", "Configuration file")
 
 	address := flag.String("address", defaultConf.Address, "URI of the websocket")
@@ -116,6 +128,26 @@ func getConf() conf {
 	}
 	if ok, err := isValidMatchCriteria(c.Match); !ok {
 		log.Fatal(err)
+	}
+
+	if flag.NArg() > 0 {
+		if flag.Arg(0) == "version" {
+			fmt.Fprintf(os.Stderr, "ldp-tail version %s (%s - %s)\n", buildVersion, buildCommit, buildDate)
+			os.Exit(0)
+		} else if flag.Arg(0) == "help" {
+			flag.Usage()
+			os.Exit(0)
+		} else {
+			fmt.Printf("Invalid command %q\n", flag.Arg(0))
+			flag.Usage()
+			os.Exit(-1)
+		}
+	}
+
+	if c.Address == "" {
+		fmt.Fprintf(os.Stderr, "No `address` specified. Please specify it with --address or thru a config file\n")
+		flag.Usage()
+		os.Exit(-1)
 	}
 
 	return c

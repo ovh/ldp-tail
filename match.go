@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -12,13 +13,14 @@ var supportedMatchOperatorsMap = map[string]struct {
 	descriptionNot string
 }{
 	"present": {"Field %[1]q is present", "Field %[1]q is not present"},
-	"begin":   {"Field %[1]q begins with %[2]v", "Field %[1]q doest not begins with %[2]v"},
-	"contain": {"Field %[1]q contains %[2]v", "Field %[1]q doest not contains %[2]v"},
+	"begin":   {"Field %[1]q begins with %[2]v", "Field %[1]q does not begins with %[2]v"},
+	"contain": {"Field %[1]q contains %[2]v", "Field %[1]q does not contains %[2]v"},
 	"lt":      {"Field %[1]q is less than %[2]v", "Field %[1]q is greater than or equal to %[2]v"},
 	"le":      {"Field %[1]q is less than or equal to %[2]v", "Field %[1]q is greater than %[2]v"},
 	"eq":      {"Field %[1]q is equal to %[2]v", "Field %[1]q is not equal to %[2]v"},
 	"ge":      {"Field %[1]q is greater than or equal to %[2]v", "Field %[1]q is less than %[2]v"},
 	"gt":      {"Field %[1]q is greater than %[2]v", "Field %[1]q is less than or equal to %[2]v"},
+	"regex":   {"Field %[1]q match %[2]q", "Field %[1]q does not match %[2]q"},
 }
 
 var supportedMatchOperators = func() []string {
@@ -55,6 +57,20 @@ func isValidMatchCriteria(criteria []matchCriterion) (bool, error) {
 			}
 			// Overwrite value
 			criteria[k].Value = f
+		}
+		if m.Operator == "regex" {
+			// Be sure it's a string
+			v, ok := m.Value.(string)
+			if !ok {
+				return false, fmt.Errorf("invalid value for operator 'regex' in %+v", m)
+			}
+			// Check regular expression
+			r, err := regexp.Compile(v)
+			if err != nil {
+				return false, fmt.Errorf("invalid regular expression in %+v: %s", m, err.Error())
+			}
+			// Overwrite value
+			criteria[k].Value = r
 		}
 	}
 
@@ -127,6 +143,15 @@ func match(value map[string]interface{}, criteria []matchCriterion) bool {
 				log.Printf("lt: incompatible value for comparison: %s", err.Error())
 			}
 			if (vFloat <= m.Value.(float64)) != m.Not {
+				return false
+			}
+		case "regex":
+			vString, ok := v.(string)
+			if !ok {
+				// Stringify value
+				vString = fmt.Sprintf("%v", v)
+			}
+			if (!m.Value.(*regexp.Regexp).MatchString(vString)) != m.Not {
 				return false
 			}
 		default:

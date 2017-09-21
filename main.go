@@ -105,7 +105,7 @@ func main() {
 			}
 
 			if c.Raw {
-				fmt.Printf("%+v\n", message)
+				fmt.Println(string(logMessage.Message))
 			} else {
 				// Print them
 				err = t.Execute(os.Stdout, message)

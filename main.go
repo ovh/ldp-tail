@@ -106,6 +106,8 @@ func main() {
 
 			if c.Raw {
 				fmt.Println(string(logMessage.Message))
+			} else if c.formatFunc != nil {
+				fmt.Println(c.formatFunc(message))
 			} else {
 				// Print them
 				err = t.Execute(os.Stdout, message)

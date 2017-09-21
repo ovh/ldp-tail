@@ -43,7 +43,9 @@ Parameters
     * `gt` The field is greater than the value
     * `regex` The field match the regular expression
 * Formatting
-  * `raw` Display raw message instead of parsing it
+  * `raw` Display raw JSON message instead of parsing it
+  * `format` Display messages using a pre-defined format. Valid values:
+    * `logrus` Display messages like [Logrus](https://github.com/sirupsen/logrus) for messages sent with [Graylog Hook for Logrus](https://github.com/gemnasium/logrus-graylog-hook/)
   * `pattern` Template to apply on each message to display it. Default: `{{._appID}}> {{.short_message}}`. Custom available functions are:
     * `color` Set text color. Available colors are: `green` `white` `yellow` `red` `blue` `magenta` `cyan`
     * `bColor` Set background color. Available colors are: `green` `white` `yellow` `red` `blue` `magenta` `cyan`

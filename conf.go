@@ -12,17 +12,21 @@ import (
 )
 
 type conf struct {
-	Address string
-	Match   []matchCriterion
-	Pattern string
-	Raw     bool
+	Address    string
+	Match      []matchCriterion
+	Raw        bool
+	Format     string
+	formatFunc func(map[string]interface{}) string
+	Pattern    string
 }
 
 var defaultConf = conf{
 	"",
 	nil,
-	"{{._appID}}> {{.short_message}}",
 	false,
+	"",
+	nil,
+	"{{._appID}}> {{.short_message}}",
 }
 
 var operatorRegexp = regexp.MustCompile(`(.+?)\.(not\.)?(` + strings.Join(supportedMatchOperators, "|") + `)`)
@@ -44,8 +48,9 @@ func getConf() conf {
 
 	address := flag.String("address", defaultConf.Address, "URI of the websocket")
 	match := flag.StringArray("match", nil, "Fields to match")
-	pattern := flag.String("pattern", defaultConf.Pattern, "Template to apply on each message to display it")
 	raw := flag.Bool("raw", defaultConf.Raw, "Display raw message instead of parsing it")
+	format := flag.String("format", defaultConf.Format, fmt.Sprintf("Display messages using a pre-defined format. Valid values: (%s)", strings.Join(supportedFormat, ", ")))
+	pattern := flag.String("pattern", defaultConf.Pattern, "Template to apply on each message to display it")
 
 	flag.Parse()
 
@@ -63,11 +68,14 @@ func getConf() conf {
 	if *address != defaultConf.Address {
 		c.Address = *address
 	}
-	if *pattern != defaultConf.Pattern {
-		c.Pattern = *pattern
-	}
 	if *raw != defaultConf.Raw {
 		c.Raw = *raw
+	}
+	if *format != defaultConf.Format {
+		c.Format = *format
+	}
+	if *pattern != defaultConf.Pattern {
+		c.Pattern = *pattern
 	}
 
 	// Match Criteria
@@ -113,6 +121,17 @@ func getConf() conf {
 			flag.Usage()
 			os.Exit(-1)
 		}
+	}
+
+	// Check format helper
+	if c.Format != "" {
+		f, ok := supportedFormatMap[c.Format]
+		if !ok {
+			fmt.Fprintf(os.Stderr, "Invalid `format`: %q\n", c.Format)
+			flag.Usage()
+			os.Exit(-1)
+		}
+		c.formatFunc = f
 	}
 
 	if c.Address == "" {

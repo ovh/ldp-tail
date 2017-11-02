@@ -160,3 +160,29 @@ func level(v interface{}) (string, error) {
 
 	return value, nil
 }
+
+func toInt(v interface{}) (int64, error) {
+	if f, ok := v.(float64); ok {
+		return int64(f), nil
+	}
+	if s, ok := v.(string); ok {
+		f, e := strconv.ParseFloat(s, 64)
+		return int64(f), e
+	}
+	return 0, fmt.Errorf("Invalid type %T for conversion to `int`", v)
+}
+
+func toFloat(v interface{}) (float64, error) {
+	if f, ok := v.(float64); ok {
+		return f, nil
+	}
+	if s, ok := v.(string); ok {
+		f, e := strconv.ParseFloat(s, 64)
+		return f, e
+	}
+	return 0, fmt.Errorf("Invalid type %T for conversion to `float`", v)
+}
+
+func toString(v interface{}) string {
+	return fmt.Sprintf("%v", v)
+}

@@ -54,8 +54,8 @@ Parameters
     * `join` Concatenates strings passed in argument with the first argument used as separator
     * `concat` Concatenates strings passed in argument
     * `duration` Transform a value in a human readable duration. First argument must be a parsable number. The second argument is the multiplier coefficient to be applied based on nanoseconds. Ex: 1000000 if the value is in milliseconds.
-    * `int` Converts a string in int64
-    * `float` Converts a string in float64
+    * `int` Converts a string or a number to an int64
+    * `float` Converts a string to float64
     * `string` Converts a value to a string
     * `get` Return the value under the key passed in the second argument of the map passed first argument. Useful for accessing keys containing a period. Ex: `{{ get . "foo.bar" }}`
     * `column` Formats input into multiple columns. Columns are delimited with the characters supplied in the first argument. Ex: `"{{ column " | " (date .timestamp) (concat ._method " " ._path ) ._httpStatus_int }}`

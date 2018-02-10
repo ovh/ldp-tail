@@ -24,13 +24,30 @@ var supportedFormat = func() []string {
 	return a
 }()
 
-// From https://github.com/gemnasium/logrus-graylog-hook/blob/master/graylog_hook.go#L166
-func logrusLevelToString(v int) string {
-	return logrus.Level(v - 2).String()
+var syslogLevelToLogrus = [...]string{
+	strings.ToUpper(logrus.PanicLevel.String())[:4], // LOG_EMERG   = 0
+	strings.ToUpper(logrus.PanicLevel.String())[:4], // LOG_ALERT   = 1
+	strings.ToUpper(logrus.FatalLevel.String())[:4], // LOG_CRIT    = 2
+	strings.ToUpper(logrus.ErrorLevel.String())[:4], // LOG_ERR     = 3
+	strings.ToUpper(logrus.WarnLevel.String())[:4],  // LOG_WARNING = 4
+	strings.ToUpper(logrus.InfoLevel.String())[:4],  // LOG_NOTICE  = 5
+	strings.ToUpper(logrus.InfoLevel.String())[:4],  // LOG_INFO    = 6
+	strings.ToUpper(logrus.DebugLevel.String())[:4], // LOG_DEBUG   = 7
+}
+
+// String reverse of
+// https://github.com/gemnasium/logrus-graylog-hook/blob/master/graylog_hook.go#L144
+func syslogLevelToLogrusString(v int) string {
+	if v < 0 {
+		v = 0
+	} else if v >= len(syslogLevelToLogrus) {
+		v = len(syslogLevelToLogrus) - 1
+	}
+	return syslogLevelToLogrus[v]
 }
 
 func logrusFormater(v map[string]interface{}) string {
-	level := logrusLevelToString(int(v["level"].(float64)))
+	level := syslogLevelToLogrusString(int(v["level"].(float64)))
 	timestamp := int64(v["timestamp"].(float64))
 
 	// Fields
@@ -44,7 +61,7 @@ func logrusFormater(v map[string]interface{}) string {
 
 	// Output
 	b := &bytes.Buffer{}
-	fmt.Fprintf(b, "%s[%s] %-44s", strings.ToUpper(level)[0:4], time.Unix(timestamp, 0).Format(time.RFC3339), v["short_message"])
+	fmt.Fprintf(b, "%s[%s] %-44s", level, time.Unix(timestamp, 0).Format(time.RFC3339), v["short_message"])
 
 	for _, k := range keys {
 		fmt.Fprintf(b, ` %s="%v"`, k[1:], v[k])

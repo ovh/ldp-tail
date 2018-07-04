@@ -11,7 +11,8 @@ import (
 )
 
 var supportedFormatMap = map[string]func(map[string]interface{}) string{
-	"logrus": logrusFormater,
+	"logrus":       logrusFormaterWithoutColor,
+	"logrus-color": logrusFormaterWithColor,
 }
 
 var supportedFormat = func() []string {
@@ -35,7 +36,28 @@ var syslogLevelToLogrus = []logrus.Level{
 	logrus.DebugLevel, // LOG_DEBUG   = 7
 }
 
-func logrusFormater(v map[string]interface{}) string {
+func logrusLevelToColor(l logrus.Level) int {
+	switch l {
+	case logrus.DebugLevel:
+		return 37 // gray
+	case logrus.WarnLevel:
+		return 33 // yellow
+	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
+		return 31 // red
+	default:
+		return 36 // blue
+	}
+}
+
+func logrusFormaterWithColor(v map[string]interface{}) string {
+	return logrusFormater(v, true)
+}
+
+func logrusFormaterWithoutColor(v map[string]interface{}) string {
+	return logrusFormater(v, false)
+}
+
+func logrusFormater(v map[string]interface{}, color bool) string {
 	syslogLevel := int(v["level"].(float64))
 	level := syslogLevelToLogrus[syslogLevel]
 	timestamp := int64(v["timestamp"].(float64))
@@ -52,6 +74,9 @@ func logrusFormater(v map[string]interface{}) string {
 	// Output
 	b := &bytes.Buffer{}
 	levelString := strings.ToUpper(level.String())[0:4]
+	if color {
+		levelString = fmt.Sprintf("\x1b[%dm%s\x1b[0m", logrusLevelToColor(level), levelString)
+	}
 	fmt.Fprintf(b, "%s[%s] %-44s", levelString, time.Unix(timestamp, 0).Format(time.RFC3339), v["short_message"])
 
 	for _, k := range keys {

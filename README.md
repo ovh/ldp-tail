@@ -5,7 +5,7 @@ Logs Data Platform - Tail
 =========================
 
 This tool allows you to display the logs pushed in Logs Data Platform in real time.
-More infos on Logs Data Platform and how to obtain the stream uri: https://docs.ovh.com/gb/en/mobile-hosting/logs-data-platform/ldp-tail/
+More infos on Logs Data Platform and how to obtain the stream uri: https://docs.ovh.com/gb/en/logs-data-platform/ldp-tail/
 
 
 Installation

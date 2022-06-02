@@ -12,7 +12,7 @@ Installation
 ------------
 To install cli, simply run:
 ```
-$ go get github.com/ovh/ldp-tail
+$ go install github.com/ovh/ldp-tail@latest
 ```
 
 Usage

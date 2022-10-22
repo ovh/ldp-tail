@@ -1,0 +1,18 @@
+builds:
+  -
+    binary: ldp-tail
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags: -s -w -X main.buildVersion={{.Version}} -X main.buildCommit={{.Commit}} -X main.buildDate={{.Date}}
+archives:
+  -
+    files:
+      - LICENSE
+    format_overrides:
+      - goos: windows
+        format: zip

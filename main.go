@@ -57,7 +57,6 @@ func main() {
 			} else {
 				log.Printf("  "+supportedMatchOperatorsMap[f.Operator].description, f.Key, f.Value)
 			}
-
 		}
 	}
 
@@ -96,7 +95,7 @@ func main() {
 			json.Unmarshal(msg, &logMessage)
 
 			// Extract infos
-			var message map[string]interface{}
+			var message map[string]any
 			json.Unmarshal([]byte(logMessage.Message), &message)
 
 			if !match(message, c.Match) {
@@ -106,9 +105,14 @@ func main() {
 			if c.Raw {
 				fmt.Println(string(logMessage.Message))
 			} else if c.formatFunc != nil {
+				// Remove unwanted keys
+				for _, k := range c.ExcludeKeys {
+					delete(message, k)
+				}
+
 				fmt.Println(c.formatFunc(message))
 			} else {
-				// Print them
+				// Print template
 				err = t.Execute(os.Stdout, message)
 				os.Stdout.Write([]byte{'\n'})
 				if err != nil {

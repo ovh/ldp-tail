@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -11,30 +13,30 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
+const config = ".ldp-tail.toml"
+
 type conf struct {
-	Address    string
-	Match      []matchCriterion
-	Raw        bool
-	Format     string
-	formatFunc func(map[string]interface{}) string
-	Pattern    string
+	Address     string
+	Match       []matchCriterion
+	ExcludeKeys []string
+	Raw         bool
+	Format      string
+	formatFunc  func(map[string]any) string
+	Pattern     string
 }
 
 var defaultConf = conf{
-	"",
-	nil,
-	false,
-	"",
-	nil,
-	"{{._appID}}> {{.short_message}}",
+	Pattern: "{{._appID}}> {{.short_message}}",
 }
 
 var operatorRegexp = regexp.MustCompile(`(.+?)\.(not\.)?(` + strings.Join(supportedMatchOperators, "|") + `)`)
 
 // Build details
-var buildVersion = "dev"
-var buildCommit = "unknown"
-var buildDate = "unknown"
+var (
+	buildVersion = "dev"
+	buildCommit  = "unknown"
+	buildDate    = "unknown"
+)
 
 func init() {
 	flag.Usage = func() {
@@ -61,6 +63,17 @@ func getConf() conf {
 		_, err := toml.DecodeFile(*configFile, &c)
 		if err != nil {
 			log.Fatal(err)
+		}
+	}
+
+	if *configFile == "" {
+		usr, err := user.Current()
+		if err == nil {
+			filename := filepath.Join(usr.HomeDir, config)
+			_, err = toml.DecodeFile(filename, &c)
+			if err != nil {
+				log.Printf("Could not load global %s: %s", filename, err)
+			}
 		}
 	}
 

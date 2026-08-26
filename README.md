@@ -42,6 +42,8 @@ Parameters
     * `ge` The field is greater than or equal to the value
     * `gt` The field is greater than the value
     * `regex` The field match the regular expression
+* Exclude keys from log entries
+  * `ExcludeKeys` List of excluded keys from JSON log entries (e.g. `_version`)
 * Formatting
   * `raw` Display raw JSON message instead of parsing it
   * `format` Display messages using a pre-defined format. Valid values:
@@ -66,15 +68,16 @@ Parameters
 * Config
   * `config` Config file loaded before parsing parameters, so parameters will override the values in the config file (except for `match` where parameters will add more criteria instead of replacing them). The config file use the [TOML](https://github.com/toml-lang/toml) file format. The structure of the configuration file is:
 ```
-Address string
-Match   []{
+Address     string
+Match       []{
     Key      string
     Operator string
     Value    interface{}
     Not      bool
 }
-Pattern string
-Raw     bool
+ExcludeKeys []string
+Pattern     string
+Raw         bool
 ```
 Exemple:
 ```

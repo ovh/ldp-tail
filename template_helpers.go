@@ -45,7 +45,6 @@ func color(c string) string {
 }
 
 func date(v float64, f ...string) string {
-
 	t := time.Unix(int64(v), 0)
 
 	if len(f) == 0 {
@@ -67,7 +66,7 @@ func concat(s ...string) string {
 	return b.String()
 }
 
-func duration(v interface{}, factor float64) (string, error) {
+func duration(v any, factor float64) (string, error) {
 	var d time.Duration
 	switch value := v.(type) {
 	case string:
@@ -86,7 +85,7 @@ func duration(v interface{}, factor float64) (string, error) {
 	return d.String(), nil
 }
 
-func get(v map[string]interface{}, k string) interface{} {
+func get(v map[string]any, k string) any {
 	return v[k]
 }
 
@@ -112,7 +111,7 @@ func column(sep string, s ...string) (string, error) {
 	return strings.Join(s, sep), nil
 }
 
-func begin(v interface{}, substr string) bool {
+func begin(v any, substr string) bool {
 	var value string
 
 	switch v.(type) {
@@ -124,7 +123,7 @@ func begin(v interface{}, substr string) bool {
 	return strings.HasPrefix(value, substr)
 }
 
-func contain(v interface{}, substr string) bool {
+func contain(v any, substr string) bool {
 	var value string
 
 	switch v.(type) {
@@ -147,7 +146,7 @@ var syslogLevels = map[int]string{
 	7: "debug",
 }
 
-func level(v interface{}) (string, error) {
+func level(v any) (string, error) {
 	vFloat, err := toNumber(v)
 	if err != nil {
 		return "", err
@@ -161,7 +160,7 @@ func level(v interface{}) (string, error) {
 	return value, nil
 }
 
-func toInt(v interface{}) (int64, error) {
+func toInt(v any) (int64, error) {
 	if f, ok := v.(float64); ok {
 		return int64(f), nil
 	}
@@ -172,7 +171,7 @@ func toInt(v interface{}) (int64, error) {
 	return 0, fmt.Errorf("Invalid type %T for conversion to `int`", v)
 }
 
-func toFloat(v interface{}) (float64, error) {
+func toFloat(v any) (float64, error) {
 	if f, ok := v.(float64); ok {
 		return f, nil
 	}
@@ -183,6 +182,6 @@ func toFloat(v interface{}) (float64, error) {
 	return 0, fmt.Errorf("Invalid type %T for conversion to `float`", v)
 }
 
-func toString(v interface{}) string {
+func toString(v any) string {
 	return fmt.Sprintf("%v", v)
 }

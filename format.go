@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -10,7 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var supportedFormatMap = map[string]func(map[string]interface{}) string{
+var supportedFormatMap = map[string]func(map[string]any) string{
+	"json":         jsonFormater,
 	"logrus":       logrusFormaterWithoutColor,
 	"logrus-color": logrusFormaterWithColor,
 }
@@ -49,17 +51,33 @@ func logrusLevelToColor(l logrus.Level) int {
 	}
 }
 
-func logrusFormaterWithColor(v map[string]interface{}) string {
+func jsonFormater(v map[string]any) string {
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return "could not format in JSON"
+	}
+	return string(payload)
+}
+
+func logrusFormaterWithColor(v map[string]any) string {
 	return logrusFormater(v, true)
 }
 
-func logrusFormaterWithoutColor(v map[string]interface{}) string {
+func logrusFormaterWithoutColor(v map[string]any) string {
 	return logrusFormater(v, false)
 }
 
-func logrusFormater(v map[string]interface{}, color bool) string {
-	syslogLevel := int(v["level"].(float64))
+func logrusFormater(v map[string]any, color bool) string {
+	syslogLevel := 6
+	if x, ok := v["level"]; ok {
+		syslogLevel = int(x.(float64))
+	} else if x, ok := v["_stream"]; ok {
+		if x == "stderr" {
+			syslogLevel = 3
+		}
+	}
 	level := syslogLevelToLogrus[syslogLevel]
+
 	timestamp := int64(v["timestamp"].(float64))
 
 	// Fields
@@ -77,7 +95,7 @@ func logrusFormater(v map[string]interface{}, color bool) string {
 	if color {
 		levelString = fmt.Sprintf("\x1b[%dm%s\x1b[0m", logrusLevelToColor(level), levelString)
 	}
-	fmt.Fprintf(b, "%s[%s] %-44s", levelString, time.Unix(timestamp, 0).Format(time.RFC3339), v["short_message"])
+	fmt.Fprintf(b, "%s[%s] %s", levelString, time.Unix(timestamp, 0).Format(time.RFC3339), v["short_message"])
 
 	for _, k := range keys {
 		fmt.Fprintf(b, ` %s="%v"`, k[1:], v[k])

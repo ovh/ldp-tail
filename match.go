@@ -36,7 +36,7 @@ var supportedMatchOperators = func() []string {
 type matchCriterion struct {
 	Key      string
 	Operator string
-	Value    interface{}
+	Value    any
 	Not      bool
 }
 
@@ -77,7 +77,7 @@ func isValidMatchCriteria(criteria []matchCriterion) (bool, error) {
 	return true, nil
 }
 
-func match(value map[string]interface{}, criteria []matchCriterion) bool {
+func match(value map[string]any, criteria []matchCriterion) bool {
 	for _, m := range criteria {
 		v, ok := value[m.Key]
 
@@ -161,7 +161,7 @@ func match(value map[string]interface{}, criteria []matchCriterion) bool {
 	return true
 }
 
-func toNumber(v interface{}) (float64, error) {
+func toNumber(v any) (float64, error) {
 	switch value := v.(type) {
 	case string:
 		// Try to parse value as float64
